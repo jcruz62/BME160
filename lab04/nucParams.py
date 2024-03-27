@@ -1,3 +1,4 @@
+from sequenceAnalyzer import FastAreader, NucParams
 class NucParams:
     rnaCodonTable = {
     # RNA codon table
