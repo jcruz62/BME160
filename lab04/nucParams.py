@@ -106,3 +106,34 @@ class NucParams:
                 total += value
         
         return total
+
+
+##########################################################################################
+def main(fileName=None):
+    myReader = FastAreader(fileName)
+    myNuc = NucParams()
+
+    for head, seq in myReader.readFasta():
+        myNuc.addSequence(seq)
+    
+    print(f"sequence length = {myNuc.nucCount()/ 1000000:.2f} Mb\n")
+    gc_content = (myNuc.nucComp.get('G', 0) + myNuc.nucComp.get('C', 0)) / myNuc.nucCount() * 100
+    print(f"GC content = {gc_content:.1f} %\n")
+        
+    # format (XXX: A F (D))
+    # XXX = codon, A = single letter, F = codon freq, D = codon count
+    
+    # sort codons by aa
+    sortedcodons = [(codon, aa) for codon, aa in sorted(myNuc.rnaCodonTable.items(), key=lambda item: (item[1], item[0]))]
+    
+    for codon, aa in sortedcodons:
+        count = myNuc.codonComp.get(codon, 0)
+        aaCount = myNuc.aaComp.get(aa, 0)
+        # Calculate frequency by codonComp / aaComp
+        freq = (count / aaCount) * 100
+        print(f"{codon} : {aa} {freq:.1f} ({count})")
+                
+                
+
+if __name__ == "__main__":
+    main('/Users/jadecruz/Downloads/testGenome.fa')  # Change the path accordingly
